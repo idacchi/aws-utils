@@ -1,7 +1,7 @@
 require 'rubygems'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
-AWS.config(YAML.load(File.read('config.yml')))
+AWS.config(YAML.load(File.read('../config.yml')))
 ec2_client = AWS::EC2.new.client
 
 result = ec2_client.describe_security_groups()
@@ -20,6 +20,7 @@ tmp_array.each {|tmp|
 	puts '** ' + tmp[0]
 	puts '*** inbound'
 	puts '|ip|protocol|port|h'
+	#puts 'ip protocol port'
 	tmp[1].each { |inbound|
 		protocol = inbound[:ip_protocol] 
 		port = inbound[:from_port].to_s 
@@ -33,15 +34,18 @@ tmp_array.each {|tmp|
 		
 		inbound[:ip_ranges].each {|ip_range|
 			puts '|' + ip_range[:cidr_ip] + '|' + protocol + '|' + port + '|'
+			#puts '' + ip_range[:cidr_ip] + ' ' + protocol + ' ' + port
 		}
 
 		inbound[:groups].each {|group|
 			puts '|' + group[:group_id].to_s + '|' + protocol + '|' + port + '|'
+			#puts '' + group[:group_id].to_s + ' ' + protocol + ' ' + port
 		}
 	}
 
 	puts '*** outbound'
 	puts '|ip|protocol|port|h'
+	#puts 'ip protocol port'
 	tmp[2].each { |outbound|
 		protocol = outbound[:ip_protocol] 
 		port = outbound[:from_port].to_s 
@@ -55,10 +59,12 @@ tmp_array.each {|tmp|
 
 		outbound[:ip_ranges].each {|ip_range|
 			puts '|' + ip_range[:cidr_ip] + '|' + protocol + '|' + port + '|'
+			#puts '' + ip_range[:cidr_ip] + ' ' + protocol + ' ' + port
 		}
 
 		outbound[:groups].each {|group|
 			puts '|' + group[:group_id].to_s + '|' + protocol + '|' + port + '|'
+			#puts '' + group[:group_id].to_s + ' ' + protocol + ' ' + port
 		}
 	}
 	puts
